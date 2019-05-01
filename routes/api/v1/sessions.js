@@ -2,7 +2,6 @@ var express = require("express");
 var router = express.Router();
 var User = require('../../../models').User;
 const bcrypt = require('bcrypt');
-pry = require('pryjs')
 
 
 /*POST new session*/
