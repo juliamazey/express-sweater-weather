@@ -19,19 +19,19 @@ router.get('/', function(req, res, next){
 	    var lat = location_json.results[0].geometry.location.lat
       var long = location_json.results[0].geometry.location.lng
 	    var url = `https://api.darksky.net/forecast/${process.env.DARK_SKY_API}/${lat},${long}`
-      Location.findOrCreate({
-        where: {
-          address: location,
-          latitude: lat,
-          longitude: long
-        }
-      })
-      .then(([location, created]) => {
-        eval(pry.it)
-        console.log(location.get({
-         plain: true
-       }))
-       console.log(created)
+      // Location.findOrCreate({
+      //   where: {
+      //     address: location,
+      //     latitude: lat,
+      //     longitude: long
+      //   }
+      // })
+      // .then(([location, created]) => {
+      //   eval(pry.it)
+      //   console.log(location.get({
+      //    plain: true
+      //  }))
+      //  console.log(created)
       })
 	    fetch(url)
 	    .then(function(forecast_response){
