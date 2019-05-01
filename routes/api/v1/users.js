@@ -29,14 +29,14 @@ router.post('/', function(req, res, next) {
     }
     else {
       res.setHeader("Content-Type", "application/json");
-      res.status(500).send(JSON.stringify({
+      res.status(401).send(JSON.stringify({
         error: "Your passwords don't match"
     }))
     }
   }
   else {
     res.setHeader("Content-Type", "application/json");
-    res.status(500).send(JSON.stringify({
+    res.status(401).send(JSON.stringify({
       error: "You are missing information"
   }))
   }
