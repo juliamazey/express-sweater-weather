@@ -3,7 +3,6 @@ var router = express.Router();
 var fetch = require('node-fetch');
 require('dotenv').config();
 pry = require('pryjs');
-// eval(pry.it)
 
 
 // GET forecast for a city
@@ -15,8 +14,10 @@ router.get('/', function(req, res, next){
 	    return location_response.json();
 	  })
 	  .then(function(location_json){
-	    var lat_long = `${location_json.results[0].geometry.location.lat},${location_json.results[0].geometry.location.lng}`
-	    var url = `https://api.darksky.net/forecast/${process.env.DARK_SKY_API}/${lat_long}`
+	    var lat = location_json.results[0].geometry.location.lat
+      var long = location_json.results[0].geometry.location.lng
+	    var url = `https://api.darksky.net/forecast/${process.env.DARK_SKY_API}/${lat},${long}`
+      
 	    fetch(url)
 	    .then(function(forecast_response){
 	      return forecast_response.json();
