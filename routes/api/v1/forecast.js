@@ -35,16 +35,14 @@ router.get('/', function(req, res, next){
           defaults: { latitude: lat,
                       longitude: long }
         })
-        .then( loc => {  
-          fetch(url)
-          .then(function(forecast_response){
-            return forecast_response.json();
-          })
-          .then(function(forecast_json){
-            delete forecast_json.minutely;
-            res.status(200).send(forecast_json);
-          })
-        })
+  	    fetch(url)
+  	    .then(function(forecast_response){
+  	      return forecast_response.json();
+  	    })
+  	    .then(function(forecast_json){
+          delete forecast_json.minutely;
+  	      res.status(200).send(forecast_json);
+  	    })
         .catch(error => {
           res.setHeader("Content-Type", "application/json");
           res.status(500).send({ error });
