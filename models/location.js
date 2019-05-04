@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     longitude: DataTypes.FLOAT
   }, {});
   Location.associate = function(models) {
-    // associations can be defined here
+    Location.hasMany(models.Favorite)
   };
   return Location;
 };
