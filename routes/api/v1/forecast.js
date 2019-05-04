@@ -40,7 +40,7 @@ router.get('/', function(req, res, next){
   	      return forecast_response.json();
   	    })
   	    .then(function(forecast_json){
-          eval(pry.it)
+          delete forecast_json.minutely;
   	      res.status(200).send(forecast_json);
   	    })
         .catch(error => {
