@@ -15,16 +15,16 @@ router.post('/', function(req, res, next) {
             password: hash,
             api_key: uuidv4()
           })
-        .then(user => {
-          res.setHeader("Content-Type", "application/json");
-          res.status(201).send(JSON.stringify({
-            api_key: user.api_key
-          }));
-        })
-        .catch(error => {
-          res.setHeader("Content-Type", "application/json");
-          res.status(500).send({ error });
-        })
+          .then(user => {
+            res.setHeader("Content-Type", "application/json");
+            res.status(201).send(JSON.stringify({
+              api_key: user.api_key
+            }));
+          })
+          .catch(error => {
+            res.setHeader("Content-Type", "application/json");
+            res.status(500).send({ error });
+          })
       });
     }
     else {
