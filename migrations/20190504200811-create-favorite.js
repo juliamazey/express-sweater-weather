@@ -8,16 +8,16 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userId: {
+      UserId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Users',
           key: 'id'
         },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE'
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL'
       },
-      locationId: {
+      LocationId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Locations',
