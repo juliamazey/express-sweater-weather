@@ -68,4 +68,61 @@ router.post('/', function(req, res, next) {
   })
 });
 
+// GET favorites for a user
+router.get('/', function(req, res, next) {
+  User.findOne({
+    where: {
+      api_key: req.body.api_key
+    }
+  })
+  .then(function(user) {
+    if (user === null) {
+      res.setHeader("Content-Type", "application/json");
+      res.status(401).send(JSON.stringify("Your API key is not valid"));
+    }
+    else {
+      return Location.findAll({
+        include: {
+          model: Favorite,
+          where: { UserId: user.dataValues.id}
+        },
+      })
+      .then( favorites => {
+        var favoritesWeather = favorites.map( function(fav) {
+          lat = fav.dataValues.latitude
+          long = fav.dataValues.longitude
+    	    url = `https://api.darksky.net/forecast/${process.env.DARK_SKY_API}/${lat},${long}`
+          var fetched = fetch(url)
+          .then(function(forecast_response){
+            return forecast_response.json();
+          })
+          .then( weather_data => {
+            return {
+              location: fav.dataValues.address,
+              current_weather: weather_data.currently
+            }
+          })
+          .then(results => {
+            return results
+          })
+          return fetched
+        });
+        return Promise.all(favoritesWeather)
+      })
+      .then(favs => {
+        res.setHeader("Content-Type", "application/json"),
+        res.status(200).send(favs);
+      })
+      .catch(error => {
+        res.setHeader("Content-Type", "application/json");
+        res.status(500).send({ error });
+      })
+	  }
+  })
+  .catch(error => {
+    res.setHeader("Content-Type", "application/json");
+    res.status(500).send({ error });
+  })
+});
+
 	module.exports = router;
