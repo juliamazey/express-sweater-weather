@@ -16,9 +16,10 @@ router.get('/', function(req, res, next){
       res.status(401).send(JSON.stringify("Your API key is not valid"));
     }
     else {
-      getLocation(req.query.location)
+      var loc = req.query.location
+      getLocation(loc)
   	  .then(function(fetched_location){
-        return getForecast(fetched_location);
+        return getForecast(fetched_location, loc);
       })
       .then(function(fetched_forecast){
         delete fetched_forecast.minutely;
@@ -45,12 +46,13 @@ function getLocation(location) {
   return fetched
 };
 
-function getForecast(fetched_location){
+function getForecast(fetched_location, loc){
   var lat = fetched_location.results[0].geometry.location.lat
   var long = fetched_location.results[0].geometry.location.lng
   var url = `https://api.darksky.net/forecast/${process.env.DARK_SKY_API}/${lat},${long}`
   Location.findOrCreate({
-    where: { address: fetched_location.results[0].formatted_address},
+
+    where: { address: loc},
     defaults: { latitude: lat, longitude: long }
   })
   var fetched = fetch(url)

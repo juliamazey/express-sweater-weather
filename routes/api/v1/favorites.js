@@ -40,12 +40,12 @@ router.post('/', function(req, res, next) {
         .then( loc => {
           return Favorite.findOrCreate({
             where: {
-              LocationId: loc[0].dataValues.id,
-              UserId: user.dataValues.id
+              LocationId: loc[0].id,
+              UserId: user.id
             },
             defaults: {
-              LocationId: loc[0].dataValues.id,
-              UserId: user.dataValues.id
+              LocationId: loc[0].id,
+              UserId: user.id
             }
           })
         })
@@ -84,13 +84,13 @@ router.get('/', function(req, res, next) {
       return Location.findAll({
         include: {
           model: Favorite,
-          where: { UserId: user.dataValues.id}
+          where: { UserId: user.id}
         },
       })
       .then( favorites => {
         var favoritesWeather = favorites.map( function(fav) {
-          lat = fav.dataValues.latitude
-          long = fav.dataValues.longitude
+          lat = fav.latitude
+          long = fav.longitude
     	    url = `https://api.darksky.net/forecast/${process.env.DARK_SKY_API}/${lat},${long}`
           var fetched = fetch(url)
           .then(function(forecast_response){
@@ -98,7 +98,7 @@ router.get('/', function(req, res, next) {
           })
           .then( weather_data => {
             return {
-              location: fav.dataValues.address,
+              location: fav.address,
               current_weather: weather_data.currently
             }
           })
@@ -118,6 +118,44 @@ router.get('/', function(req, res, next) {
         res.status(500).send({ error });
       })
 	  }
+  })
+  .catch(error => {
+    res.setHeader("Content-Type", "application/json");
+    res.status(500).send({ error });
+  })
+});
+
+// DELETE favorite for a user
+router.delete('/', function(req, res, next) {
+  User.findOne({
+    where: {
+      api_key: req.body.api_key
+    }
+  })
+  .then(function(user) {
+    if (user === null) {
+      res.setHeader("Content-Type", "application/json");
+      res.status(401).send(JSON.stringify("Your API key is not valid"));
+    }
+    else {
+      Location.findOne({where: { address: req.body.location }})
+      .then(location => {
+        Favorite.destroy({
+          where: {
+            UserId: user.id,
+            LocationId: location.id
+          }
+        })
+      })
+      .then(fav => {
+        res.setHeader("Content-Type", "application/json");
+        res.status(204).send();
+      })
+      .catch(error => {
+        res.setHeader("Content-Type", "application/json");
+        res.status(500).send({ error })
+      });
+    }
   })
   .catch(error => {
     res.setHeader("Content-Type", "application/json");
