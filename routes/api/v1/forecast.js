@@ -23,7 +23,12 @@ router.get('/', function(req, res, next){
       })
       .then(function(fetched_forecast){
         delete fetched_forecast.minutely;
-        res.status(200).send(fetched_forecast);
+        res.status(200).send({
+          location: loc,
+          currently: fetched_forecast.currently,
+          hourly: fetched_forecast.hourly,
+          daily: fetched_forecast.daily
+        });
       })
       .catch(error => {
         res.setHeader("Content-Type", "application/json");
@@ -51,7 +56,6 @@ function getForecast(fetched_location, loc){
   var long = fetched_location.results[0].geometry.location.lng
   var url = `https://api.darksky.net/forecast/${process.env.DARK_SKY_API}/${lat},${long}`
   Location.findOrCreate({
-
     where: { address: loc},
     defaults: { latitude: lat, longitude: long }
   })
